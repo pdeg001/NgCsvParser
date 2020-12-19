@@ -9,7 +9,7 @@ namespace zegrisCsvParser
 {
     public partial class csvMain : Form
     {
-        string fileDirectory, newCsv, newCsvContent;
+        string fileDirectory, newCsv, newCsvContent, line;
         public csvMain()
         {
             InitializeComponent();
@@ -34,130 +34,130 @@ namespace zegrisCsvParser
             {
                 path = file.FileName;
                 txtSelectedFile.Text = path;
-                OpenCsv();
                 fileDirectory = Path.GetDirectoryName(path);
-                newCsv = $"{fileDirectory}\\parsedCsv.csv";
-                File.WriteAllText(newCsv, newCsvContent);
+                newCsv = $"{fileDirectory}\\parsed_Csv.csv";
+                OpenCsv(newCsv);
+               // File.WriteAllText(newCsv, newCsvContent);
                 MessageBox.Show("Csv bestand vewerkt..", "Zegris CSV Parser");
             }
         }
 
-        private void OpenCsv()
+        private void OpenCsv(string newCsvFile)
         {
+            string newCsvText = "", newLine = "";
+            string edtItem, newValue;
+            int lineCount = 0;
+            var csv = new StringWriter();
             using (var reader = new StreamReader(txtSelectedFile.Text))
                 while (!reader.EndOfStream)
                 {
-                    var line = reader.ReadLine();
+                    string line = "";
+                    line = reader.ReadLine();
+                    if (lineCount == 0)
+                    {
+                        newCsvText += line + '\n';
+                        csv.WriteLine(line);
+                        lineCount++;
+                        continue;
+                    }
+                    
+                   // line = new line;// = CheckChar(reader.ReadLine());
                     var values = line.Split(';');
-                    CheckChar(line);
-                   
-                //    foreach (string item in values)
-                //    {
-                        string ItemText = values[6];
-                        IsGramItem(ItemText);
-                        IsLiterItem(ItemText);
-                        
-                //    }
-                   
+
+                    for(int i = 0; i < values.Length - 1; i++)
+                    {
+                        newLine += $"{values[i]};";
+                        if(i == 6)
+                        {
+                            string ItemText = values[6];
+
+                            edtItem = values[6];// NoGoChars(values[6]);
+                            string[] lookForGr = { "g", "gr" };
+                            newValue = IsGramItem(edtItem, lookForGr, "gr", "r", "GRAM");
+                            if (newValue != edtItem)
+                            {
+                                newLine = line.Replace(edtItem, NoGoChars(newValue));
+                                csv.WriteLine(newLine);
+                                continue;
+                            }
+                            string[] lookForLt = { "l", "lt" };
+                            newValue = IsGramItem(edtItem, lookForLt, "ltr", "r", "LITER");
+                            if (newValue != edtItem)
+                            {
+                                newLine = line.Replace(edtItem, NoGoChars(newValue));
+                                csv.WriteLine(newLine);
+                                continue;
+                            }
+                            newLine = line.Replace(edtItem, NoGoChars(newValue));
+                            csv.WriteLine(newLine);
+                        }
+                    }
+                    
+                    
                 }
+            File.WriteAllText(newCsvFile, csv.ToString());
         }
 
-        //private bool IsGramItem(string item)
-        //{
-        //    int itemLen = item.Length-1;
-        //    for (int i = itemLen; i >= 0; i--)
-        //    {
-        //        if (i < 0)
-        //        {
-        //            return false;
-        //        }
-        //        if (item.Substring(i, 1) == "g")
-        //        {
-        //            if (IsCharDigit(char.Parse(item.Substring(i-1, 1))) && i == itemLen)
-        //            {
-        //                Console.WriteLine($"GRAM GEVONDEN - {item} CHANGED TO  - {item}r");
-        //                break;
-        //            }
-        //        }
-        //    }
+        private string NoGoChars(string edtItem)
+        {
+            string newItemDescr;
+            newItemDescr = edtItem.Replace(".", "");
+            newItemDescr = newItemDescr.Replace("&", " & ");
+            newItemDescr = newItemDescr.Replace("<", "");
+            newItemDescr = newItemDescr.Replace(">", "");
+            newItemDescr = newItemDescr.Replace("!", "");
 
-        //    return true;
-        //}
+            return newItemDescr;
 
-        private bool IsGramItem(string item)
+        }
+
+        private string IsGramItem(string item, string[] lookFor, string replaceWith, string addCharacter, string debugTxt)
         {
             string oldItem = item;
-            item = item.Replace(".", "");
             int itemLen = item.Length - 1;
-            for (int i = itemLen; i >= 0; i--)
+            int i, y;
+            if(itemLen == 0)
+            {
+                return item;
+            }
+
+            for (i = itemLen; i >= 0; i--)
             {
                 if (i < 0)
                 {
-                    return false;
+                    return item;
                 }
-                if (item.Substring(i, 1) == "g")
+                
+                if (lookFor.Contains(item.Substring(i, 1)))
                 {
                     if (IsCharDigit(char.Parse(item.Substring(i - 1, 1))))
                     {
-                        for (int y = i; y <= itemLen; y++)
+                        for (y = i; y <= itemLen; y++)
                         {
+                            //FIND FIRST SPACE, THIS MEANS THE FOUND IS IN BETWEEN
                             if (item.Substring(y, 1) == " ")
                             {
-                                item = item.Replace(item.Substring(i, y - i), "gr");
-                                Console.WriteLine($"GRAM GEVONDEN - {oldItem} CHANGED TO  - {item}");
-                                break;
+                                item = item.Replace(item.Substring(i, y - i), replaceWith);
+                             //   Console.WriteLine($"{debugTxt} GEVONDEN - {oldItem} CHANGED TO  - {item}");
+                                return item;
+                            }
+
+                            //END OF LINE REACHED
+                            if (y == itemLen)
+                            {
+                                //GO BACK TO POS Y + 1 AND REPLACE ALL TO END OF LINE
+                                int startPos, endPos;
+                                startPos = i;
+                                endPos = itemLen - (i - 1);
+                              //  Console.WriteLine($"{debugTxt} GEVONDEN - {item} CHANGED TO  - {item.Replace(item.Substring(startPos, endPos), replaceWith)}");
+                                return item.Replace(item.Substring(startPos, endPos), replaceWith);
                             }
                         }
-
-
-                        if (item.Substring(i, itemLen - i) != "gr")
-                        {
-                            Console.WriteLine($"GRAM GEVONDEN - {item} CHANGED TO  - {item}r");
-                            break;
-                        }
                     }
                 }
             }
 
-            return true;
-        }
-
-        private bool IsLiterItem(string item)
-        {
-            string oldItem = item;
-            item = item.Replace(".", "");
-            int itemLen = item.Length - 1;
-            for (int i = itemLen; i >= 0; i--)
-            {
-                if (i < 0)
-                {
-                    return false;
-                }
-                if (item.Substring(i, 1) == "l")
-                {
-                    if (IsCharDigit(char.Parse(item.Substring(i - 1, 1))))
-                    {
-                        for(int y = i; y <= itemLen; y++)
-                        {
-                            if (item.Substring(y, 1) == " ")
-                            {
-                                item = item.Replace(item.Substring(i, y-i), "ltr");
-                                Console.WriteLine($"LITER GEVONDEN - {oldItem} CHANGED TO  - {item}");
-                                break;
-                            } 
-                        }
-
-                        
-                        if (item.Substring(i, itemLen-i) != "ltr")
-                        {
-                            Console.WriteLine($"LITER GEVONDEN - {item} CHANGED TO  - {item}r");
-                           break;
-                        }
-                    }
-                }
-            }
-
-            return true;
+            return item;
         }
 
         public static bool IsCharDigit(char c)
@@ -165,17 +165,10 @@ namespace zegrisCsvParser
             return ((c >= '0') && (c <= '9'));
         }
 
-        private void CheckChar(string strItem)
+        private string CheckChar(string strItem)
         {
             string[] ForbiddenChars = {"~", "!", "@", "#", "$", "%", "^", "&", "*", "."};
-            //if (ForbiddenChars.Any(strItem.Contains))
-            //{
-            //    Console.WriteLine($"Char FOUND IN {strItem}");
-            //} else
-            //{
-            // //   Console.WriteLine($"??");
-            //}
-           
+                      
             foreach (string strChr in ForbiddenChars)
             {
                 if (strItem.IndexOf(strChr) > -1)
@@ -188,7 +181,7 @@ namespace zegrisCsvParser
                 }
             }
             newCsvContent = newCsvContent + strItem+"\n";
-           
+            return $"{strItem}\n";
         }
 
        
