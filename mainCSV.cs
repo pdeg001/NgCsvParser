@@ -173,7 +173,6 @@ namespace zegrisCsvParser
             {
                 if (strItem.IndexOf(strChr) > -1)
                 {
-                   // Console.WriteLine($"Char {strChr} FOUND IN {strItem}");
                     if (strChr == ".")// || strChr == "!")
                     {
                         strItem = strItem.Replace(strChr, "");
