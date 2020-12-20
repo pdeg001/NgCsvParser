@@ -1,7 +1,6 @@
 ﻿using System.Windows.Forms;
 using System.IO;
-
-using System;
+using CsvHelper;
 using System.Linq;
 
 
@@ -9,7 +8,7 @@ namespace zegrisCsvParser
 {
     public partial class csvMain : Form
     {
-        string fileDirectory, newCsv, newCsvContent, line;
+        string fileDirectory, newCsvContent;
         public csvMain()
         {
             InitializeComponent();
@@ -26,7 +25,6 @@ namespace zegrisCsvParser
             string path;
             listBox1.Items.Clear();
             newCsvContent = "";
-           
 
             OpenFileDialog file = new OpenFileDialog();
             file.Filter = "CSV Bestanden (*.csv)|*.csv";
@@ -35,14 +33,12 @@ namespace zegrisCsvParser
                 path = file.FileName;
                 txtSelectedFile.Text = path;
                 fileDirectory = Path.GetDirectoryName(path);
-                newCsv = $"{fileDirectory}\\parsed_Csv.csv";
-                OpenCsv(newCsv);
-               // File.WriteAllText(newCsv, newCsvContent);
+                OpenCsv();
                 MessageBox.Show("Csv bestand vewerkt..", "Zegris CSV Parser");
             }
         }
 
-        private void OpenCsv(string newCsvFile)
+        private void OpenCsv()
         {
             string newCsvText = "", newLine = "";
             string edtItem, newValue;
@@ -61,7 +57,6 @@ namespace zegrisCsvParser
                         continue;
                     }
                     
-                   // line = new line;// = CheckChar(reader.ReadLine());
                     var values = line.Split(';');
 
                     for(int i = 0; i < values.Length - 1; i++)
@@ -71,9 +66,9 @@ namespace zegrisCsvParser
                         {
                             string ItemText = values[6];
 
-                            edtItem = values[6];// NoGoChars(values[6]);
+                            edtItem = values[6];
                             string[] lookForGr = { "g", "gr" };
-                            newValue = IsGramItem(edtItem, lookForGr, "gr", "r", "GRAM");
+                            newValue = IsStringReplaceItem(edtItem, lookForGr, "gr", "r", "GRAM");
                             if (newValue != edtItem)
                             {
                                 newLine = line.Replace(edtItem, NoGoChars(newValue));
@@ -81,7 +76,7 @@ namespace zegrisCsvParser
                                 continue;
                             }
                             string[] lookForLt = { "l", "lt" };
-                            newValue = IsGramItem(edtItem, lookForLt, "ltr", "r", "LITER");
+                            newValue = IsStringReplaceItem(edtItem, lookForLt, "ltr", "r", "LITER");
                             if (newValue != edtItem)
                             {
                                 newLine = line.Replace(edtItem, NoGoChars(newValue));
@@ -95,7 +90,7 @@ namespace zegrisCsvParser
                     
                     
                 }
-            File.WriteAllText(newCsvFile, csv.ToString());
+            File.WriteAllText($"{fileDirectory}\\parsed_Csv.csv", csv.ToString());
         }
 
         private string NoGoChars(string edtItem)
@@ -111,7 +106,7 @@ namespace zegrisCsvParser
 
         }
 
-        private string IsGramItem(string item, string[] lookFor, string replaceWith, string addCharacter, string debugTxt)
+        private string IsStringReplaceItem(string item, string[] lookFor, string replaceWith, string addCharacter, string debugTxt)
         {
             string oldItem = item;
             int itemLen = item.Length - 1;

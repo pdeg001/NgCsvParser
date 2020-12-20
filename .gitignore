@@ -352,3 +352,7 @@ MigrationBackup/
 bin/Debug/
 
 *.cache
+
+bin/Release/
+
+obj/Debug/
