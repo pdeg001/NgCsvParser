@@ -23,7 +23,6 @@ namespace zegrisCsvParser
         private void btnSelectFile_MouseUp(object sender, MouseEventArgs e)
         {
             string path;
-            listBox1.Items.Clear();
             newCsvContent = "";
 
             OpenFileDialog file = new OpenFileDialog();
@@ -68,7 +67,7 @@ namespace zegrisCsvParser
 
                             edtItem = values[6];
                             string[] lookForGr = { "g", "gr" };
-                            newValue = IsStringReplaceItem(edtItem, lookForGr, "gr", "r", "GRAM");
+                            newValue = IsStringReplaceItem(edtItem, lookForGr, "gr", "r");
                             if (newValue != edtItem)
                             {
                                 newLine = line.Replace(edtItem, NoGoChars(newValue));
@@ -76,7 +75,7 @@ namespace zegrisCsvParser
                                 continue;
                             }
                             string[] lookForLt = { "l", "lt" };
-                            newValue = IsStringReplaceItem(edtItem, lookForLt, "ltr", "r", "LITER");
+                            newValue = IsStringReplaceItem(edtItem, lookForLt, "ltr", "r");
                             if (newValue != edtItem)
                             {
                                 newLine = line.Replace(edtItem, NoGoChars(newValue));
@@ -106,7 +105,7 @@ namespace zegrisCsvParser
 
         }
 
-        private string IsStringReplaceItem(string item, string[] lookFor, string replaceWith, string addCharacter, string debugTxt)
+        private string IsStringReplaceItem(string item, string[] lookFor, string replaceWith, string addCharacter)
         {
             string oldItem = item;
             int itemLen = item.Length - 1;
@@ -159,7 +158,7 @@ namespace zegrisCsvParser
         {
             return ((c >= '0') && (c <= '9'));
         }
-
+        
         private string CheckChar(string strItem)
         {
             string[] ForbiddenChars = {"~", "!", "@", "#", "$", "%", "^", "&", "*", "."};
