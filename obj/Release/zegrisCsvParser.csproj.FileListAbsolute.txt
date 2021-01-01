@@ -34,3 +34,4 @@ D:\develop\GITHUB\NgCsvParser\obj\Release\zegrisCsvParser.csproj.CoreCompileInpu
 D:\develop\GITHUB\NgCsvParser\obj\Release\zegrisCsvParser.csproj.CopyComplete
 D:\develop\GITHUB\NgCsvParser\obj\Release\zegrisCsvParser.exe
 D:\develop\GITHUB\NgCsvParser\obj\Release\zegrisCsvParser.pdb
+D:\develop\GITHUB\NgCsvParser\obj\Release\zegrisCsvParser.csprojAssemblyReference.cache
