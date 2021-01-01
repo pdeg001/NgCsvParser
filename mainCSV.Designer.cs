@@ -37,13 +37,15 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.4717F);
-            this.btnClose.Location = new System.Drawing.Point(459, 260);
+            this.btnClose.Location = new System.Drawing.Point(488, 260);
             this.btnClose.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(110, 27);
@@ -62,6 +64,7 @@
             this.txtSelectedFile.Name = "txtSelectedFile";
             this.txtSelectedFile.Size = new System.Drawing.Size(386, 29);
             this.txtSelectedFile.TabIndex = 1;
+            this.txtSelectedFile.TextChanged += new System.EventHandler(this.txtSelectedFile_TextChanged);
             // 
             // btnSelectFile
             // 
@@ -123,12 +126,35 @@
             this.label3.Text = "->";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.BackgroundImage = global::zegrisCsvParser.Properties.Resources.gear_process_setting_icon_1320085760785373884_24;
+            this.btnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnRefresh.Location = new System.Drawing.Point(554, 54);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(44, 29);
+            this.btnRefresh.TabIndex = 11;
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Visible = false;
+            this.btnRefresh.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnRefresh_MouseUp);
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(12, 30);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(169, 20);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "CSV Bestand";
+            // 
             // csvMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(581, 300);
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.ClientSize = new System.Drawing.Size(610, 300);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox1);
@@ -160,6 +186,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Label label4;
     }
 }
 

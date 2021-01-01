@@ -9,6 +9,7 @@ namespace zegrisCsvParser
     public partial class csvMain : Form
     {
         string fileDirectory, newCsvContent;
+        private readonly string[] ForbiddenChars = { "~", "!", "@", "#", "$", "%", "^", "&", "*", "." };
         public csvMain()
         {
             InitializeComponent();
@@ -32,9 +33,12 @@ namespace zegrisCsvParser
                 path = file.FileName;
                 txtSelectedFile.Text = path;
                 fileDirectory = Path.GetDirectoryName(path);
-                OpenCsv();
-                MessageBox.Show("Csv bestand vewerkt..", "Zegris CSV Parser");
+                
+               // OpenCsv();
+               // MessageBox.Show("Csv bestand vewerkt..", "Zegris CSV Parser");
             }
+
+            btnRefresh.Visible = txtSelectedFile.TextLength > 5;
         }
 
         private void OpenCsv()
@@ -158,10 +162,21 @@ namespace zegrisCsvParser
         {
             return ((c >= '0') && (c <= '9'));
         }
-        
+
+        private void btnRefresh_MouseUp(object sender, MouseEventArgs e)
+        {
+            OpenCsv();
+            MessageBox.Show("Csv bestand vewerkt..", "Zegris CSV Parser");
+        }
+
+        private void txtSelectedFile_TextChanged(object sender, System.EventArgs e)
+        {
+            btnRefresh.Visible = txtSelectedFile.Text.Length > 2;
+        }
+      
         private string CheckChar(string strItem)
         {
-            string[] ForbiddenChars = {"~", "!", "@", "#", "$", "%", "^", "&", "*", "."};
+         //   string[] ForbiddenChars = {"~", "!", "@", "#", "$", "%", "^", "&", "*", "."};
                       
             foreach (string strChr in ForbiddenChars)
             {
